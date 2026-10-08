@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Image Link Generator</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: 'Segoe UI', Tahoma, sans-serif;
+    }
+
+    body {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+    }
+
+    .container {
+        width: 100%;
+        max-width: 900px;
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        overflow: hidden;
+    }
+
+    .header {
+        background: linear-gradient(135deg, #00A651 0%, #008a43 100%);
+        color: #fff;
+        padding: 25px 30px;
+        text-align: center;
+    }
+
+    .header h1 {
+        font-size: 24px;
+        font-weight: 700;
+        margin-bottom: 6px;
+    }
+
+    .header p {
+        font-size: 13px;
+        opacity: 0.9;
+    }
+
+    .upload-area {
+        padding: 30px;
+        text-align: center;
+        border-bottom: 2px dashed #e5e7eb;
+        margin: 20px;
+        border-radius: 16px;
+        background: #f9fafb;
+        transition: all 0.3s;
+        cursor: pointer;
+    }
+
+    .upload-area:hover {
+        background: #f0fdf4;
+        border-color: #00A651;
+    }
+
+    .upload-area.dragover {
+        background: #dcfce7;
+        border-color: #00A651;
+        transform: scale(1.02);
+    }
+
+    .upload-icon {
+        font-size: 50px;
+        color: #00A651;
+        margin-bottom: 15px;
+    }
+
+    .upload-area h3 {
+        font-size: 16px;
+        color: #1f2937;
+        margin-bottom: 6px;
+    }
+
+    .upload-area p {
+        font-size: 12px;
+        color: #6b7280;
+        margin-bottom: 15px;
+    }
+
+    .upload-btn {
+        background: #00A651;
+        color: #fff;
+        border: none;
+        padding: 12px 28px;
+        border-radius: 10px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.2s;
+    }
+
+    .upload-btn:hover {
+        background: #008a43;
+        transform: translateY(-2px);
+    }
+
+    #fileInput {
+        display: none;
+    }
+
+    .toolbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 30px 20px 30px;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .count {
+        font-size: 13px;
+        color: #6b7280;
+        font-weight: 600;
+    }
+
+    .actions {
+        display: flex;
+        gap: 8px;
+    }
+
+    .action-btn {
+        background: #f3f4f6;
+        color: #1f2937;
+        border: 1px solid #e5e7eb;
+        padding: 8px 16px;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .action-btn:hover {
+        background: #e5e7eb;
+    }
+
+    .action-btn.primary {
+        background: #00A651;
+        color: #fff;
+        border-color: #00A651;
+    }
+
+    .action-btn.primary:hover {
+        background: #008a43;
+    }
+
+    .action-btn.danger {
+        color: #ef4444;
+    }
+
+    .action-btn.danger:hover {
+        background: #fee2e2;
+    }
+
+    .gallery {
+        padding: 0 30px 30px 30px;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 18px;
+    }
+
+    .image-card {
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 14px;
+        overflow: hidden;
+        transition: all 0.2s;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+
+    .image-card:hover {
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        transform: translateY(-3px);
+    }
+
+    .image-preview {
+        width: 100%;
+        height: 200px;
+        background: #f3f4f6;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .image-preview img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .loading-overlay {
+        position: absolute;
+        inset: 0;
+        background: rgba(0,0,0,0.6);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        font-size: 11px;
+        font-weight: 600;
+        gap: 8px;
+    }
+
+    .spinner {
+        width: 30px;
+        height: 30px;
+        border: 3px solid rgba(255,255,255,0.3);
+        border-top-color: #fff;
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+
+    .success-badge {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        background: #22c55e;
+        color: #fff;
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+
+    .error-badge {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        background: #ef4444;
+        color: #fff;
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+
+    .image-info {
+        padding: 14px;
+    }
+
+    .name-input {
+        width: 100%;
+        padding: 8px 10px;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 600;
+        color: #1f2937;
+        outline: none;
+        margin-bottom: 8px;
+        background: #fff;
+    }
+
+    .name-input:focus {
+        border-color: #00A651;
+    }
+
+    .image-size {
+        font-size: 10px;
+        color: #6b7280;
+        margin-bottom: 8px;
+    }
+
+    .link-box {
+        display: flex;
+        gap: 4px;
+        margin-bottom: 8px;
+    }
+
+    .link-input {
+        flex: 1;
+        padding: 7px 9px;
+        border: 1px solid #e5e7eb;
+        border-radius: 7px;
+        font-size: 10px;
+        outline: none;
+        background: #f9fafb;
+        color: #374151;
+        font-family: monospace;
+    }
+
+    .copy-btn {
+        background: #00A651;
+        color: #fff;
+        border: none;
+        padding: 7px 11px;
+        border-radius: 7px;
+        font-size: 10px;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    .copy-btn:hover {
+        background: #008a43;
+    }
+
+    .copy-btn.copied {
+        background: #22c55e;
+    }
+
+    .copy-btn:disabled {
+        background: #d1d5db;
+        cursor: not-allowed;
+    }
+
+    .image-actions {
+        display: flex;
+        gap: 6px;
+    }
+
+    .image-actions button {
+        flex: 1;
+        background: #f3f4f6;
+        border: 1px solid #e5e7eb;
+        color: #374151;
+        padding: 7px;
+        border-radius: 7px;
+        font-size: 10px;
+        cursor: pointer;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+    }
+
+    .image-actions button:hover {
+        background: #e5e7eb;
+    }
+
+    .image-actions button.remove {
+        color: #ef4444;
+    }
+
+    .image-actions button.remove:hover {
+        background: #fee2e2;
+    }
+
+    .empty-state {
+        grid-column: 1 / -1;
+        text-align: center;
+        padding: 50px 20px;
+        color: #9ca3af;
+    }
+
+    .empty-state i {
+        font-size: 50px;
+        margin-bottom: 12px;
+        opacity: 0.5;
+    }
+
+    .toast {
+        position: fixed;
+        bottom: 30px;
+        left: 50%;
+        transform: translateX(-50%) translateY(100px);
+        background: #1f2937;
+        color: #fff;
+        padding: 12px 24px;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 600;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        transition: transform 0.3s;
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        max-width: 90%;
+    }
+
+    .toast.show {
+        transform: translateX(-50%) translateY(0);
+    }
+
+    .toast.success {
+        background: #22c55e;
+    }
+
+    .toast.error {
+        background: #ef4444;
+    }
+
+    @media (max-width: 600px) {
+        .gallery {
+            grid-template-columns: 1fr;
+        }
+        .header h1 {
+            font-size: 20px;
+        }
+    }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1><i class="fa-solid fa-cloud-arrow-up"></i> Image Link Generator</h1>
+        <p>Upload images, set names, copy links</p>
+    </div>
+
+    <div class="upload-area" id="uploadArea">
+        <div class="upload-icon">
+            <i class="fa-solid fa-cloud-arrow-up"></i>
+        </div>
+        <h3>Drag & Drop Images Here</h3>
+        <p>or click to browse (PNG, JPG, JPEG, GIF, WEBP)</p>
+        <button class="upload-btn" onclick="document.getElementById('fileInput').click()">
+            <i class="fa-solid fa-plus"></i> Select Images
+        </button>
+        <input type="file" id="fileInput" accept="image/*" multiple>
+    </div>
+
+    <div class="toolbar">
+        <div class="count" id="countText">0 images</div>
+        <div class="actions">
+            <button class="action-btn primary" onclick="copyAllLinks()">
+                <i class="fa-solid fa-copy"></i> Copy All (Name + Link)
+            </button>
+            <button class="action-btn danger" onclick="clearAll()">
+                <i class="fa-solid fa-trash"></i> Clear All
+            </button>
+        </div>
+    </div>
+
+    <div class="gallery" id="gallery">
+        <div class="empty-state">
+            <i class="fa-regular fa-images"></i>
+            <div>No images uploaded yet</div>
+            <div style="font-size: 12px; margin-top: 6px;">Upload images to generate links</div>
+        </div>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+    // ===== API KEY =====
+    const API_KEY = 'c8ae152701d76ba17e6d0bbd1a7a9bd7';
+
+    const fileInput = document.getElementById('fileInput');
+    const uploadArea = document.getElementById('uploadArea');
+    const gallery = document.getElementById('gallery');
+    const countText = document.getElementById('countText');
+    const toast = document.getElementById('toast');
+
+    let images = [];
+
+    // ===== UPLOAD AREA =====
+    uploadArea.addEventListener('click', (e) => {
+        if (e.target.closest('.upload-btn')) return;
+        fileInput.click();
+    });
+
+    fileInput.addEventListener('change', (e) => {
+        handleFiles(e.target.files);
+        fileInput.value = '';
+    });
+
+    uploadArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadArea.classList.add('dragover');
+    });
+
+    uploadArea.addEventListener('dragleave', () => {
+        uploadArea.classList.remove('dragover');
+    });
+
+    uploadArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        uploadArea.classList.remove('dragover');
+        handleFiles(e.dataTransfer.files);
+    });
+
+    // ===== HANDLE FILES =====
+    function handleFiles(files) {
+        const validFiles = Array.from(files).filter(f => f.type.startsWith('image/'));
+        if (validFiles.length === 0) {
+            showToast('Valid images select karein', 'error');
+            return;
+        }
+
+        validFiles.forEach(file => {
+            const id = 'img_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+            const defaultName = file.name.replace(/\.[^/.]+$/, '');
+
+            images.push({
+                id: id,
+                name: defaultName,
+                size: formatSize(file.size),
+                status: 'uploading',
+                link: '',
+                previewUrl: ''
+            });
+
+            // Preview
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = images.find(i => i.id === id);
+                if (img) img.previewUrl = e.target.result;
+                renderGallery();
+            };
+            reader.readAsDataURL(file);
+
+            // Upload
+            uploadToImgBB(file, id);
+        });
+
+        renderGallery();
+    }
+
+    // ===== UPLOAD TO IMGBB =====
+    async function uploadToImgBB(file, id) {
+        try {
+            const formData = new FormData();
+            formData.append('image', file);
+
+            const response = await fetch(`https://api.imgbb.com/1/upload?key=${API_KEY}`, {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await response.json();
+
+            if (data.success && data.data && data.data.url) {
+                const img = images.find(i => i.id === id);
+                if (img) {
+                    img.status = 'success';
+                    img.link = data.data.url;
+                    img.thumb = data.data.thumb?.url || data.data.url;
+                    renderGallery();
+                    showToast('Image uploaded! Link ready.', 'success');
+                }
+            } else {
+                throw new Error(data.error?.message || 'Upload failed');
+            }
+        } catch (error) {
+            const img = images.find(i => i.id === id);
+            if (img) {
+                img.status = 'error';
+                img.error = error.message;
+                renderGallery();
+            }
+            showToast('Upload failed: ' + error.message, 'error');
+        }
+    }
+
+    // ===== FORMAT SIZE =====
+    function formatSize(bytes) {
+        if (bytes < 1024) return bytes + ' B';
+        if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+        return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+    }
+
+    // ===== RENDER GALLERY =====
+    function renderGallery() {
+        if (images.length === 0) {
+            gallery.innerHTML = `
+                <div class="empty-state">
+                    <i class="fa-regular fa-images"></i>
+                    <div>No images uploaded yet</div>
+                    <div style="font-size: 12px; margin-top: 6px;">Upload images to generate links</div>
+                </div>
+            `;
+            countText.innerText = '0 images';
+            return;
+        }
+
+        const successCount = images.filter(i => i.status === 'success').length;
+        const uploadingCount = images.filter(i => i.status === 'uploading').length;
+        countText.innerText = `${images.length} image${images.length > 1 ? 's' : ''} · ${successCount} ready · ${uploadingCount} uploading`;
+
+        gallery.innerHTML = images.map(img => {
+            let previewHTML = '';
+            let linkHTML = '';
+            let actionsHTML = '';
+
+            if (img.status === 'uploading') {
+                previewHTML = img.previewUrl 
+                    ? `<img src="${img.previewUrl}" alt="${img.name}">
+                       <div class="loading-overlay"><div class="spinner"></div>Uploading...</div>`
+                    : `<div class="spinner"></div>`;
+                linkHTML = `<input type="text" class="link-input" value="Uploading..." readonly>
+                            <button class="copy-btn" disabled><i class="fa-solid fa-spinner fa-spin"></i></button>`;
+            } else if (img.status === 'success') {
+                previewHTML = `<img src="${img.previewUrl || img.thumb}" alt="${img.name}">
+                               <div class="success-badge"><i class="fa-solid fa-check"></i></div>`;
+                linkHTML = `<input type="text" class="link-input" value="${img.link}" readonly onclick="this.select()">
+                            <button class="copy-btn" onclick="copyLink('${img.id}', this)">
+                                <i class="fa-solid fa-copy"></i> Copy
+                            </button>`;
+            } else {
+                previewHTML = `<img src="${img.previewUrl}" alt="${img.name}" style="opacity:0.5;">
+                               <div class="error-badge"><i class="fa-solid fa-xmark"></i></div>`;
+                linkHTML = `<input type="text" class="link-input" value="Upload failed" readonly>
+                            <button class="copy-btn" disabled><i class="fa-solid fa-xmark"></i></button>`;
+            }
+
+            actionsHTML = `
+                <div class="image-actions">
+                    ${img.status === 'success' ? `
+                        <button onclick="downloadImage('${img.id}')">
+                            <i class="fa-solid fa-download"></i> Save
+                        </button>
+                        <button onclick="openImage('${img.id}')">
+                            <i class="fa-solid fa-up-right-from-square"></i> Open
+                        </button>
+                    ` : ''}
+                    <button class="remove" onclick="removeImage('${img.id}')">
+                        <i class="fa-solid fa-trash"></i> Delete
+                    </button>
+                </div>
+            `;
+
+            return `
+                <div class="image-card" data-id="${img.id}">
+                    <div class="image-preview">
+                        ${previewHTML}
+                    </div>
+                    <div class="image-info">
+                        <input type="text" class="name-input" 
+                               value="${escapeHtml(img.name)}" 
+                               placeholder="Image name likhein..."
+                               oninput="updateName('${img.id}', this.value)">
+                        <div class="image-size">${img.size}</div>
+                        <div class="link-box">
+                            ${linkHTML}
+                        </div>
+                        ${actionsHTML}
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    // ===== UPDATE NAME =====
+    function updateName(id, value) {
+        const img = images.find(i => i.id === id);
+        if (img) img.name = value;
+    }
+
+    // ===== ESCAPE HTML =====
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    // ===== COPY SINGLE LINK =====
+    function copyLink(id, btn) {
+        const img = images.find(i => i.id === id);
+        if (!img || !img.link) return;
+
+        const text = `${img.name}\n${img.link}`;
+        copyToClipboard(text);
+
+        btn.classList.add('copied');
+        btn.innerHTML = '<i class="fa-solid fa-check"></i> Copied!';
+        setTimeout(() => {
+            btn.classList.remove('copied');
+            btn.innerHTML = '<i class="fa-solid fa-copy"></i> Copy';
+        }, 2000);
+        showToast('Name + Link copied!', 'success');
+    }
+
+    // ===== COPY ALL (NAME + LINK) =====
+    function copyAllLinks() {
+        const readyImages = images.filter(i => i.status === 'success');
+        if (readyImages.length === 0) {
+            showToast('Koi ready link nahi hai', 'error');
+            return;
+        }
+
+        const text = readyImages.map(img => 
+            `📷 ${img.name}\n🔗 ${img.link}`
+        ).join('\n\n');
+
+        copyToClipboard(text);
+        showToast(`${readyImages.length} image(s) copied with names!`, 'success');
+    }
+
+    // ===== COPY TO CLIPBOARD =====
+    function copyToClipboard(text) {
+        if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(text).catch(() => fallbackCopy(text));
+        } else {
+            fallbackCopy(text);
+        }
+    }
+
+    function fallbackCopy(text) {
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        textarea.style.position = 'fixed';
+        textarea.style.opacity = '0';
+        document.body.appendChild(textarea);
+        textarea.select();
+        try { document.execCommand('copy'); } catch (e) {}
+        document.body.removeChild(textarea);
+    }
+
+    // ===== DOWNLOAD =====
+    function downloadImage(id) {
+        const img = images.find(i => i.id === id);
+        if (!img || !img.link) return;
+        const a = document.createElement('a');
+        a.href = img.link;
+        a.download = img.name || 'image';
+        a.target = '_blank';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    }
+
+    // ===== OPEN =====
+    function openImage(id) {
+        const img = images.find(i => i.id === id);
+        if (!img || !img.link) return;
+        window.open(img.link, '_blank');
+    }
+
+    // ===== REMOVE =====
+    function removeImage(id) {
+        images = images.filter(i => i.id !== id);
+        renderGallery();
+        showToast('Image removed', 'success');
+    }
+
+    // ===== CLEAR ALL =====
+    function clearAll() {
+        if (images.length === 0) {
+            showToast('Kuch nahi hai clear karne ke liye', 'error');
+            return;
+        }
+        if (confirm('Saari images remove karein?')) {
+            images = [];
+            renderGallery();
+            showToast('All cleared', 'success');
+        }
+    }
+
+    // ===== TOAST =====
+    function showToast(message, type = 'success') {
+        toast.className = 'toast ' + type;
+        toast.innerHTML = `<i class="fa-solid ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i> ${message}`;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 2500);
+    }
+</script>
+
+</body>
+</html>
