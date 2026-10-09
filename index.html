@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Image Link Generator</title>
+<title>Image Link Generator with History</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
     * {
@@ -24,7 +24,7 @@
 
     .container {
         width: 100%;
-        max-width: 900px;
+        max-width: 1000px;
         background: #fff;
         border-radius: 20px;
         box-shadow: 0 20px 60px rgba(0,0,0,0.3);
@@ -49,6 +49,45 @@
         opacity: 0.9;
     }
 
+    /* Tabs */
+    .tabs {
+        display: flex;
+        background: #f9fafb;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    .tab {
+        flex: 1;
+        padding: 14px 20px;
+        text-align: center;
+        font-size: 13px;
+        font-weight: 600;
+        color: #6b7280;
+        cursor: pointer;
+        border-bottom: 3px solid transparent;
+        transition: all 0.2s;
+    }
+
+    .tab:hover {
+        background: #f3f4f6;
+        color: #1f2937;
+    }
+
+    .tab.active {
+        color: #00A651;
+        border-bottom-color: #00A651;
+        background: #fff;
+    }
+
+    .tab-content {
+        display: none;
+    }
+
+    .tab-content.active {
+        display: block;
+    }
+
+    /* Upload */
     .upload-area {
         padding: 30px;
         text-align: center;
@@ -385,6 +424,171 @@
         opacity: 0.5;
     }
 
+    /* History */
+    .history-container {
+        padding: 20px 30px 30px;
+    }
+
+    .history-day {
+        margin-bottom: 20px;
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 14px;
+        overflow: hidden;
+    }
+
+    .history-day-header {
+        background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+        padding: 14px 18px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: pointer;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    .history-day-header h3 {
+        font-size: 14px;
+        font-weight: 700;
+        color: #166534;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .history-day-header .day-count {
+        font-size: 11px;
+        background: #00A651;
+        color: #fff;
+        padding: 3px 10px;
+        border-radius: 12px;
+        font-weight: 700;
+    }
+
+    .history-day-body {
+        padding: 15px;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 10px;
+    }
+
+    .history-item {
+        background: #f9fafb;
+        border: 1px solid #e5e7eb;
+        border-radius: 10px;
+        overflow: hidden;
+        transition: all 0.2s;
+        cursor: pointer;
+    }
+
+    .history-item:hover {
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        transform: translateY(-2px);
+    }
+
+    .history-item-preview {
+        width: 100%;
+        height: 100px;
+        background: #e5e7eb;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .history-item-preview img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .history-item-info {
+        padding: 8px 10px;
+    }
+
+    .history-item-name {
+        font-size: 10px;
+        font-weight: 700;
+        color: #1f2937;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        margin-bottom: 3px;
+    }
+
+    .history-item-time {
+        font-size: 9px;
+        color: #6b7280;
+    }
+
+    .history-item-actions {
+        display: flex;
+        gap: 4px;
+        padding: 6px;
+        background: #fff;
+        border-top: 1px solid #e5e7eb;
+    }
+
+    .history-item-actions button {
+        flex: 1;
+        background: transparent;
+        border: none;
+        color: #374151;
+        font-size: 9px;
+        cursor: pointer;
+        font-weight: 600;
+        padding: 4px;
+        border-radius: 5px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 3px;
+    }
+
+    .history-item-actions button:hover {
+        background: #f3f4f6;
+    }
+
+    .history-item-actions button.copy {
+        color: #00A651;
+    }
+
+    .history-item-actions button.delete {
+        color: #ef4444;
+    }
+
+    .history-empty {
+        text-align: center;
+        padding: 50px 20px;
+        color: #9ca3af;
+    }
+
+    .history-empty i {
+        font-size: 50px;
+        margin-bottom: 12px;
+        opacity: 0.5;
+    }
+
+    .clear-history-btn {
+        background: #ef4444;
+        color: #fff;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        margin-bottom: 15px;
+    }
+
+    .clear-history-btn:hover {
+        background: #dc2626;
+    }
+
+    /* Toast */
     .toast {
         position: fixed;
         bottom: 30px;
@@ -432,38 +636,66 @@
 <div class="container">
     <div class="header">
         <h1><i class="fa-solid fa-cloud-arrow-up"></i> Image Link Generator</h1>
-        <p>Upload images, set names, copy links</p>
+        <p>Upload images, set names, copy links — history saved automatically</p>
     </div>
 
-    <div class="upload-area" id="uploadArea">
-        <div class="upload-icon">
-            <i class="fa-solid fa-cloud-arrow-up"></i>
+    <!-- Tabs -->
+    <div class="tabs">
+        <div class="tab active" onclick="switchTab('upload')">
+            <i class="fa-solid fa-upload"></i> Upload
         </div>
-        <h3>Drag & Drop Images Here</h3>
-        <p>or click to browse (PNG, JPG, JPEG, GIF, WEBP)</p>
-        <button class="upload-btn" onclick="document.getElementById('fileInput').click()">
-            <i class="fa-solid fa-plus"></i> Select Images
-        </button>
-        <input type="file" id="fileInput" accept="image/*" multiple>
-    </div>
-
-    <div class="toolbar">
-        <div class="count" id="countText">0 images</div>
-        <div class="actions">
-            <button class="action-btn primary" onclick="copyAllLinks()">
-                <i class="fa-solid fa-copy"></i> Copy All (Name + Link)
-            </button>
-            <button class="action-btn danger" onclick="clearAll()">
-                <i class="fa-solid fa-trash"></i> Clear All
-            </button>
+        <div class="tab" onclick="switchTab('history')">
+            <i class="fa-solid fa-clock-rotate-left"></i> History
         </div>
     </div>
 
-    <div class="gallery" id="gallery">
-        <div class="empty-state">
-            <i class="fa-regular fa-images"></i>
-            <div>No images uploaded yet</div>
-            <div style="font-size: 12px; margin-top: 6px;">Upload images to generate links</div>
+    <!-- Upload Tab -->
+    <div id="tab-upload" class="tab-content active">
+        <div class="upload-area" id="uploadArea">
+            <div class="upload-icon">
+                <i class="fa-solid fa-cloud-arrow-up"></i>
+            </div>
+            <h3>Drag & Drop Images Here</h3>
+            <p>or click to browse (PNG, JPG, JPEG, GIF, WEBP)</p>
+            <button class="upload-btn" onclick="document.getElementById('fileInput').click()">
+                <i class="fa-solid fa-plus"></i> Select Images
+            </button>
+            <input type="file" id="fileInput" accept="image/*" multiple>
+        </div>
+
+        <div class="toolbar">
+            <div class="count" id="countText">0 images</div>
+            <div class="actions">
+                <button class="action-btn primary" onclick="copyAllLinks()">
+                    <i class="fa-solid fa-copy"></i> Copy All (Name + Link)
+                </button>
+                <button class="action-btn danger" onclick="clearAll()">
+                    <i class="fa-solid fa-trash"></i> Clear
+                </button>
+            </div>
+        </div>
+
+        <div class="gallery" id="gallery">
+            <div class="empty-state">
+                <i class="fa-regular fa-images"></i>
+                <div>No images uploaded yet</div>
+                <div style="font-size: 12px; margin-top: 6px;">Upload images to generate links</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- History Tab -->
+    <div id="tab-history" class="tab-content">
+        <div class="history-container">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                <div style="font-size:14px; font-weight:700; color:#1f2937;">
+                    <i class="fa-solid fa-clock-rotate-left" style="color:#00A651;"></i> Upload History
+                </div>
+                <button class="clear-history-btn" onclick="clearHistory()">
+                    <i class="fa-solid fa-trash"></i> Clear History
+                </button>
+            </div>
+            <div id="historyList"></div>
         </div>
     </div>
 </div>
@@ -479,8 +711,205 @@
     const gallery = document.getElementById('gallery');
     const countText = document.getElementById('countText');
     const toast = document.getElementById('toast');
+    const historyList = document.getElementById('historyList');
 
     let images = [];
+    let history = [];
+
+    // ===== STORAGE KEYS =====
+    const HISTORY_KEY = 'image_gen_history_v1';
+    const CURRENT_KEY = 'image_gen_current_v1';
+
+    // ===== LOAD FROM STORAGE =====
+    function loadFromStorage() {
+        try {
+            const savedHistory = localStorage.getItem(HISTORY_KEY);
+            if (savedHistory) history = JSON.parse(savedHistory);
+
+            const savedCurrent = localStorage.getItem(CURRENT_KEY);
+            if (savedCurrent) {
+                const parsed = JSON.parse(savedCurrent);
+                // Only load images that are not too old (keep for current session)
+                images = parsed;
+            }
+        } catch (e) {
+            console.warn('Storage load failed', e);
+        }
+    }
+
+    // ===== SAVE TO STORAGE =====
+    function saveToStorage() {
+        try {
+            localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+            localStorage.setItem(CURRENT_KEY, JSON.stringify(images));
+        } catch (e) {
+            console.warn('Storage save failed (might be full)', e);
+            showToast('Storage full! Purani history clear karein.', 'error');
+        }
+    }
+
+    // ===== GET TODAY KEY =====
+    function getTodayKey() {
+        const d = new Date();
+        return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+    }
+
+    // ===== GET TODAY LABEL =====
+    function getTodayLabel() {
+        const d = new Date();
+        const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        return `${days[d.getDay()]}, ${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+    }
+
+    // ===== ADD TO HISTORY =====
+    function addToHistory(img) {
+        const todayKey = getTodayKey();
+        const todayLabel = getTodayLabel();
+        const time = new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+
+        let dayEntry = history.find(h => h.dateKey === todayKey);
+
+        if (!dayEntry) {
+            dayEntry = {
+                dateKey: todayKey,
+                dateLabel: todayLabel,
+                items: []
+            };
+            history.unshift(dayEntry); // Newest first
+        }
+
+        // Remove duplicate (same link)
+        dayEntry.items = dayEntry.items.filter(item => item.link !== img.link);
+
+        dayEntry.items.unshift({
+            id: img.id,
+            name: img.name,
+            size: img.size,
+            link: img.link,
+            thumb: img.thumb || img.link,
+            previewUrl: img.previewUrl,
+            time: time
+        });
+
+        // Keep only last 30 days
+        if (history.length > 30) history = history.slice(0, 30);
+
+        saveToStorage();
+        renderHistory();
+    }
+
+    // ===== RENDER HISTORY =====
+    function renderHistory() {
+        if (history.length === 0) {
+            historyList.innerHTML = `
+                <div class="history-empty">
+                    <i class="fa-regular fa-clock"></i>
+                    <div>No history yet</div>
+                    <div style="font-size: 12px; margin-top: 6px;">Upload images to build history</div>
+                </div>
+            `;
+            return;
+        }
+
+        historyList.innerHTML = history.map(day => `
+            <div class="history-day">
+                <div class="history-day-header">
+                    <h3><i class="fa-solid fa-calendar-day"></i> ${day.dateLabel}</h3>
+                    <span class="day-count">${day.items.length} image${day.items.length > 1 ? 's' : ''}</span>
+                </div>
+                <div class="history-day-body">
+                    ${day.items.map(item => `
+                        <div class="history-item">
+                            <div class="history-item-preview">
+                                <img src="${item.previewUrl || item.thumb}" alt="${escapeHtml(item.name)}" onerror="this.src='${item.thumb}'">
+                            </div>
+                            <div class="history-item-info">
+                                <div class="history-item-name" title="${escapeHtml(item.name)}">${escapeHtml(item.name)}</div>
+                                <div class="history-item-time"><i class="fa-regular fa-clock"></i> ${item.time}</div>
+                            </div>
+                            <div class="history-item-actions">
+                                <button class="copy" onclick="copyHistoryLink('${item.id}')">
+                                    <i class="fa-solid fa-copy"></i> Copy
+                                </button>
+                                <button onclick="openHistoryLink('${item.id}')">
+                                    <i class="fa-solid fa-up-right-from-square"></i>
+                                </button>
+                                <button class="delete" onclick="deleteHistoryItem('${item.id}')">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // ===== COPY HISTORY LINK =====
+    function copyHistoryLink(itemId) {
+        for (const day of history) {
+            const item = day.items.find(i => i.id === itemId);
+            if (item) {
+                const text = `${item.name}\n${item.link}`;
+                copyToClipboard(text);
+                showToast('Name + Link copied!', 'success');
+                return;
+            }
+        }
+    }
+
+    // ===== OPEN HISTORY LINK =====
+    function openHistoryLink(itemId) {
+        for (const day of history) {
+            const item = day.items.find(i => i.id === itemId);
+            if (item) {
+                window.open(item.link, '_blank');
+                return;
+            }
+        }
+    }
+
+    // ===== DELETE HISTORY ITEM =====
+    function deleteHistoryItem(itemId) {
+        if (!confirm('Is image ko history se delete karein?')) return;
+        for (const day of history) {
+            day.items = day.items.filter(i => i.id !== itemId);
+        }
+        history = history.filter(day => day.items.length > 0);
+        saveToStorage();
+        renderHistory();
+        showToast('History item deleted', 'success');
+    }
+
+    // ===== CLEAR HISTORY =====
+    function clearHistory() {
+        if (history.length === 0) {
+            showToast('History khali hai', 'error');
+            return;
+        }
+        if (confirm('Saari history clear karein? Ye wapis nahi aayegi.')) {
+            history = [];
+            saveToStorage();
+            renderHistory();
+            showToast('History cleared', 'success');
+        }
+    }
+
+    // ===== TAB SWITCH =====
+    function switchTab(tab) {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+        if (tab === 'upload') {
+            document.querySelectorAll('.tab')[0].classList.add('active');
+            document.getElementById('tab-upload').classList.add('active');
+        } else {
+            document.querySelectorAll('.tab')[1].classList.add('active');
+            document.getElementById('tab-history').classList.add('active');
+            renderHistory();
+        }
+    }
 
     // ===== UPLOAD AREA =====
     uploadArea.addEventListener('click', (e) => {
@@ -529,16 +958,15 @@
                 previewUrl: ''
             });
 
-            // Preview
             const reader = new FileReader();
             reader.onload = (e) => {
                 const img = images.find(i => i.id === id);
                 if (img) img.previewUrl = e.target.result;
                 renderGallery();
+                saveToStorage();
             };
             reader.readAsDataURL(file);
 
-            // Upload
             uploadToImgBB(file, id);
         });
 
@@ -565,7 +993,9 @@
                     img.link = data.data.url;
                     img.thumb = data.data.thumb?.url || data.data.url;
                     renderGallery();
-                    showToast('Image uploaded! Link ready.', 'success');
+                    saveToStorage();
+                    addToHistory(img);
+                    showToast('Image uploaded! History mein save ho gayi.', 'success');
                 }
             } else {
                 throw new Error(data.error?.message || 'Upload failed');
@@ -576,6 +1006,7 @@
                 img.status = 'error';
                 img.error = error.message;
                 renderGallery();
+                saveToStorage();
             }
             showToast('Upload failed: ' + error.message, 'error');
         }
@@ -672,13 +1103,24 @@
     // ===== UPDATE NAME =====
     function updateName(id, value) {
         const img = images.find(i => i.id === id);
-        if (img) img.name = value;
+        if (img) {
+            img.name = value;
+            saveToStorage();
+            // Also update in history
+            for (const day of history) {
+                const histItem = day.items.find(i => i.id === id);
+                if (histItem) {
+                    histItem.name = value;
+                }
+            }
+            saveToStorage();
+        }
     }
 
     // ===== ESCAPE HTML =====
     function escapeHtml(text) {
         const div = document.createElement('div');
-        div.textContent = text;
+        div.textContent = text || '';
         return div.innerHTML;
     }
 
@@ -699,7 +1141,7 @@
         showToast('Name + Link copied!', 'success');
     }
 
-    // ===== COPY ALL (NAME + LINK) =====
+    // ===== COPY ALL =====
     function copyAllLinks() {
         const readyImages = images.filter(i => i.status === 'success');
         if (readyImages.length === 0) {
@@ -759,19 +1201,21 @@
     function removeImage(id) {
         images = images.filter(i => i.id !== id);
         renderGallery();
-        showToast('Image removed', 'success');
+        saveToStorage();
+        showToast('Image removed from upload (history mein safe hai)', 'success');
     }
 
-    // ===== CLEAR ALL =====
+    // ===== CLEAR CURRENT =====
     function clearAll() {
         if (images.length === 0) {
             showToast('Kuch nahi hai clear karne ke liye', 'error');
             return;
         }
-        if (confirm('Saari images remove karein?')) {
+        if (confirm('Saari current images remove karein? (History safe rahegi)')) {
             images = [];
             renderGallery();
-            showToast('All cleared', 'success');
+            saveToStorage();
+            showToast('Current cleared. History safe hai.', 'success');
         }
     }
 
@@ -782,6 +1226,12 @@
         toast.classList.add('show');
         setTimeout(() => toast.classList.remove('show'), 2500);
     }
+
+    // ===== INIT =====
+    loadFromStorage();
+    renderGallery();
+    renderHistory();
+    saveToStorage();
 </script>
 
 </body>
