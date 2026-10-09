@@ -3,15 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Image Link Generator with History</title>
+<title>Image Link Generator with Folders</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
-    * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-        font-family: 'Segoe UI', Tahoma, sans-serif;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, sans-serif; }
 
     body {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -38,16 +33,8 @@
         text-align: center;
     }
 
-    .header h1 {
-        font-size: 24px;
-        font-weight: 700;
-        margin-bottom: 6px;
-    }
-
-    .header p {
-        font-size: 13px;
-        opacity: 0.9;
-    }
+    .header h1 { font-size: 24px; font-weight: 700; margin-bottom: 6px; }
+    .header p { font-size: 13px; opacity: 0.9; }
 
     /* Tabs */
     .tabs {
@@ -68,24 +55,11 @@
         transition: all 0.2s;
     }
 
-    .tab:hover {
-        background: #f3f4f6;
-        color: #1f2937;
-    }
+    .tab:hover { background: #f3f4f6; color: #1f2937; }
+    .tab.active { color: #00A651; border-bottom-color: #00A651; background: #fff; }
 
-    .tab.active {
-        color: #00A651;
-        border-bottom-color: #00A651;
-        background: #fff;
-    }
-
-    .tab-content {
-        display: none;
-    }
-
-    .tab-content.active {
-        display: block;
-    }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
 
     /* Upload */
     .upload-area {
@@ -99,34 +73,12 @@
         cursor: pointer;
     }
 
-    .upload-area:hover {
-        background: #f0fdf4;
-        border-color: #00A651;
-    }
+    .upload-area:hover { background: #f0fdf4; border-color: #00A651; }
+    .upload-area.dragover { background: #dcfce7; border-color: #00A651; transform: scale(1.02); }
 
-    .upload-area.dragover {
-        background: #dcfce7;
-        border-color: #00A651;
-        transform: scale(1.02);
-    }
-
-    .upload-icon {
-        font-size: 50px;
-        color: #00A651;
-        margin-bottom: 15px;
-    }
-
-    .upload-area h3 {
-        font-size: 16px;
-        color: #1f2937;
-        margin-bottom: 6px;
-    }
-
-    .upload-area p {
-        font-size: 12px;
-        color: #6b7280;
-        margin-bottom: 15px;
-    }
+    .upload-icon { font-size: 50px; color: #00A651; margin-bottom: 15px; }
+    .upload-area h3 { font-size: 16px; color: #1f2937; margin-bottom: 6px; }
+    .upload-area p { font-size: 12px; color: #6b7280; margin-bottom: 15px; }
 
     .upload-btn {
         background: #00A651;
@@ -143,14 +95,9 @@
         transition: all 0.2s;
     }
 
-    .upload-btn:hover {
-        background: #008a43;
-        transform: translateY(-2px);
-    }
+    .upload-btn:hover { background: #008a43; transform: translateY(-2px); }
 
-    #fileInput {
-        display: none;
-    }
+    #fileInput { display: none; }
 
     .toolbar {
         display: flex;
@@ -161,16 +108,8 @@
         gap: 10px;
     }
 
-    .count {
-        font-size: 13px;
-        color: #6b7280;
-        font-weight: 600;
-    }
-
-    .actions {
-        display: flex;
-        gap: 8px;
-    }
+    .count { font-size: 13px; color: #6b7280; font-weight: 600; }
+    .actions { display: flex; gap: 8px; }
 
     .action-btn {
         background: #f3f4f6;
@@ -186,27 +125,11 @@
         gap: 6px;
     }
 
-    .action-btn:hover {
-        background: #e5e7eb;
-    }
-
-    .action-btn.primary {
-        background: #00A651;
-        color: #fff;
-        border-color: #00A651;
-    }
-
-    .action-btn.primary:hover {
-        background: #008a43;
-    }
-
-    .action-btn.danger {
-        color: #ef4444;
-    }
-
-    .action-btn.danger:hover {
-        background: #fee2e2;
-    }
+    .action-btn:hover { background: #e5e7eb; }
+    .action-btn.primary { background: #00A651; color: #fff; border-color: #00A651; }
+    .action-btn.primary:hover { background: #008a43; }
+    .action-btn.danger { color: #ef4444; }
+    .action-btn.danger:hover { background: #fee2e2; }
 
     .gallery {
         padding: 0 30px 30px 30px;
@@ -224,10 +147,7 @@
         box-shadow: 0 2px 8px rgba(0,0,0,0.04);
     }
 
-    .image-card:hover {
-        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-        transform: translateY(-3px);
-    }
+    .image-card:hover { box-shadow: 0 10px 25px rgba(0,0,0,0.1); transform: translateY(-3px); }
 
     .image-preview {
         width: 100%;
@@ -240,11 +160,7 @@
         position: relative;
     }
 
-    .image-preview img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
+    .image-preview img { width: 100%; height: 100%; object-fit: cover; }
 
     .loading-overlay {
         position: absolute;
@@ -269,9 +185,7 @@
         animation: spin 0.8s linear infinite;
     }
 
-    @keyframes spin {
-        to { transform: rotate(360deg); }
-    }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
     .success-badge {
         position: absolute;
@@ -305,9 +219,7 @@
         box-shadow: 0 2px 8px rgba(0,0,0,0.2);
     }
 
-    .image-info {
-        padding: 14px;
-    }
+    .image-info { padding: 14px; }
 
     .name-input {
         width: 100%;
@@ -322,21 +234,11 @@
         background: #fff;
     }
 
-    .name-input:focus {
-        border-color: #00A651;
-    }
+    .name-input:focus { border-color: #00A651; }
 
-    .image-size {
-        font-size: 10px;
-        color: #6b7280;
-        margin-bottom: 8px;
-    }
+    .image-size { font-size: 10px; color: #6b7280; margin-bottom: 8px; }
 
-    .link-box {
-        display: flex;
-        gap: 4px;
-        margin-bottom: 8px;
-    }
+    .link-box { display: flex; gap: 4px; margin-bottom: 8px; }
 
     .link-input {
         flex: 1;
@@ -365,23 +267,11 @@
         white-space: nowrap;
     }
 
-    .copy-btn:hover {
-        background: #008a43;
-    }
+    .copy-btn:hover { background: #008a43; }
+    .copy-btn.copied { background: #22c55e; }
+    .copy-btn:disabled { background: #d1d5db; cursor: not-allowed; }
 
-    .copy-btn.copied {
-        background: #22c55e;
-    }
-
-    .copy-btn:disabled {
-        background: #d1d5db;
-        cursor: not-allowed;
-    }
-
-    .image-actions {
-        display: flex;
-        gap: 6px;
-    }
+    .image-actions { display: flex; gap: 6px; }
 
     .image-actions button {
         flex: 1;
@@ -399,17 +289,9 @@
         gap: 4px;
     }
 
-    .image-actions button:hover {
-        background: #e5e7eb;
-    }
-
-    .image-actions button.remove {
-        color: #ef4444;
-    }
-
-    .image-actions button.remove:hover {
-        background: #fee2e2;
-    }
+    .image-actions button:hover { background: #e5e7eb; }
+    .image-actions button.remove { color: #ef4444; }
+    .image-actions button.remove:hover { background: #fee2e2; }
 
     .empty-state {
         grid-column: 1 / -1;
@@ -418,27 +300,32 @@
         color: #9ca3af;
     }
 
-    .empty-state i {
-        font-size: 50px;
-        margin-bottom: 12px;
-        opacity: 0.5;
-    }
+    .empty-state i { font-size: 50px; margin-bottom: 12px; opacity: 0.5; }
 
     /* History */
-    .history-container {
-        padding: 20px 30px 30px;
+    .history-container { padding: 20px 30px 30px; }
+
+    .history-toolbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+        flex-wrap: wrap;
+        gap: 10px;
     }
 
-    .history-day {
-        margin-bottom: 20px;
+    .history-title { font-size: 14px; font-weight: 700; color: #1f2937; }
+
+    .folder {
+        margin-bottom: 15px;
         background: #fff;
         border: 1px solid #e5e7eb;
         border-radius: 14px;
         overflow: hidden;
     }
 
-    .history-day-header {
-        background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+    .folder-header {
+        background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
         padding: 14px 18px;
         display: flex;
         justify-content: space-between;
@@ -447,26 +334,83 @@
         border-bottom: 1px solid #e5e7eb;
     }
 
-    .history-day-header h3 {
+    .folder-header h3 {
         font-size: 14px;
         font-weight: 700;
-        color: #166534;
+        color: #713f12;
         display: flex;
         align-items: center;
         gap: 8px;
     }
 
-    .history-day-header .day-count {
+    .folder-header h3 i { color: #f59e0b; }
+
+    .folder-header .folder-count {
         font-size: 11px;
-        background: #00A651;
+        background: #f59e0b;
         color: #fff;
         padding: 3px 10px;
         border-radius: 12px;
         font-weight: 700;
     }
 
-    .history-day-body {
+    .folder-header .folder-actions {
+        display: flex;
+        gap: 6px;
+        align-items: center;
+    }
+
+    .folder-body {
         padding: 15px;
+        display: none;
+    }
+
+    .folder-body.open { display: block; }
+
+    .folder-toolbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+        padding-bottom: 10px;
+        border-bottom: 1px dashed #e5e7eb;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .folder-toolbar-left {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 12px;
+        color: #6b7280;
+        font-weight: 600;
+    }
+
+    .folder-toolbar-left input[type="checkbox"] {
+        width: 16px;
+        height: 16px;
+        cursor: pointer;
+        accent-color: #00A651;
+    }
+
+    .folder-toolbar button {
+        background: #00A651;
+        color: #fff;
+        border: none;
+        padding: 6px 14px;
+        border-radius: 8px;
+        font-size: 11px;
+        font-weight: 600;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .folder-toolbar button:hover { background: #008a43; }
+
+    .folder-grid {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
         gap: 10px;
@@ -478,12 +422,28 @@
         border-radius: 10px;
         overflow: hidden;
         transition: all 0.2s;
-        cursor: pointer;
+        position: relative;
     }
 
     .history-item:hover {
         box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         transform: translateY(-2px);
+    }
+
+    .history-item.selected {
+        border: 2px solid #00A651;
+        background: #f0fdf4;
+    }
+
+    .history-item-checkbox {
+        position: absolute;
+        top: 6px;
+        left: 6px;
+        width: 20px;
+        height: 20px;
+        accent-color: #00A651;
+        cursor: pointer;
+        z-index: 2;
     }
 
     .history-item-preview {
@@ -502,9 +462,7 @@
         object-fit: cover;
     }
 
-    .history-item-info {
-        padding: 8px 10px;
-    }
+    .history-item-info { padding: 8px 10px; }
 
     .history-item-name {
         font-size: 10px;
@@ -516,10 +474,7 @@
         margin-bottom: 3px;
     }
 
-    .history-item-time {
-        font-size: 9px;
-        color: #6b7280;
-    }
+    .history-item-time { font-size: 9px; color: #6b7280; }
 
     .history-item-actions {
         display: flex;
@@ -545,17 +500,9 @@
         gap: 3px;
     }
 
-    .history-item-actions button:hover {
-        background: #f3f4f6;
-    }
-
-    .history-item-actions button.copy {
-        color: #00A651;
-    }
-
-    .history-item-actions button.delete {
-        color: #ef4444;
-    }
+    .history-item-actions button:hover { background: #f3f4f6; }
+    .history-item-actions button.copy { color: #00A651; }
+    .history-item-actions button.delete { color: #ef4444; }
 
     .history-empty {
         text-align: center;
@@ -563,11 +510,7 @@
         color: #9ca3af;
     }
 
-    .history-empty i {
-        font-size: 50px;
-        margin-bottom: 12px;
-        opacity: 0.5;
-    }
+    .history-empty i { font-size: 50px; margin-bottom: 12px; opacity: 0.5; }
 
     .clear-history-btn {
         background: #ef4444;
@@ -581,12 +524,9 @@
         display: inline-flex;
         align-items: center;
         gap: 6px;
-        margin-bottom: 15px;
     }
 
-    .clear-history-btn:hover {
-        background: #dc2626;
-    }
+    .clear-history-btn:hover { background: #dc2626; }
 
     /* Toast */
     .toast {
@@ -609,25 +549,14 @@
         max-width: 90%;
     }
 
-    .toast.show {
-        transform: translateX(-50%) translateY(0);
-    }
-
-    .toast.success {
-        background: #22c55e;
-    }
-
-    .toast.error {
-        background: #ef4444;
-    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+    .toast.success { background: #22c55e; }
+    .toast.error { background: #ef4444; }
 
     @media (max-width: 600px) {
-        .gallery {
-            grid-template-columns: 1fr;
-        }
-        .header h1 {
-            font-size: 20px;
-        }
+        .gallery { grid-template-columns: 1fr; }
+        .header h1 { font-size: 20px; }
+        .folder-grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
     }
 </style>
 </head>
@@ -636,7 +565,7 @@
 <div class="container">
     <div class="header">
         <h1><i class="fa-solid fa-cloud-arrow-up"></i> Image Link Generator</h1>
-        <p>Upload images, set names, copy links — history saved automatically</p>
+        <p>Upload, name, copy — folders made by date automatically</p>
     </div>
 
     <!-- Tabs -->
@@ -645,7 +574,7 @@
             <i class="fa-solid fa-upload"></i> Upload
         </div>
         <div class="tab" onclick="switchTab('history')">
-            <i class="fa-solid fa-clock-rotate-left"></i> History
+            <i class="fa-solid fa-folder"></i> History (<span id="historyCount">0</span>)
         </div>
     </div>
 
@@ -667,7 +596,7 @@
             <div class="count" id="countText">0 images</div>
             <div class="actions">
                 <button class="action-btn primary" onclick="copyAllLinks()">
-                    <i class="fa-solid fa-copy"></i> Copy All (Name + Link)
+                    <i class="fa-solid fa-copy"></i> Copy All
                 </button>
                 <button class="action-btn danger" onclick="clearAll()">
                     <i class="fa-solid fa-trash"></i> Clear
@@ -687,9 +616,10 @@
     <!-- History Tab -->
     <div id="tab-history" class="tab-content">
         <div class="history-container">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-                <div style="font-size:14px; font-weight:700; color:#1f2937;">
-                    <i class="fa-solid fa-clock-rotate-left" style="color:#00A651;"></i> Upload History
+            <div class="history-toolbar">
+                <div class="history-title">
+                    <i class="fa-solid fa-folder-open" style="color:#f59e0b;"></i> 
+                    Folders (by date)
                 </div>
                 <button class="clear-history-btn" onclick="clearHistory()">
                     <i class="fa-solid fa-trash"></i> Clear History
@@ -712,49 +642,20 @@
     const countText = document.getElementById('countText');
     const toast = document.getElementById('toast');
     const historyList = document.getElementById('historyList');
+    const historyCount = document.getElementById('historyCount');
 
     let images = [];
-    let history = [];
+    let history = []; // [{ dateKey, dateLabel, items: [...] }]
 
-    // ===== STORAGE KEYS =====
-    const HISTORY_KEY = 'image_gen_history_v1';
-    const CURRENT_KEY = 'image_gen_current_v1';
+    const HISTORY_KEY = 'image_gen_history_v2';
+    const CURRENT_KEY = 'image_gen_current_v2';
 
-    // ===== LOAD FROM STORAGE =====
-    function loadFromStorage() {
-        try {
-            const savedHistory = localStorage.getItem(HISTORY_KEY);
-            if (savedHistory) history = JSON.parse(savedHistory);
-
-            const savedCurrent = localStorage.getItem(CURRENT_KEY);
-            if (savedCurrent) {
-                const parsed = JSON.parse(savedCurrent);
-                // Only load images that are not too old (keep for current session)
-                images = parsed;
-            }
-        } catch (e) {
-            console.warn('Storage load failed', e);
-        }
-    }
-
-    // ===== SAVE TO STORAGE =====
-    function saveToStorage() {
-        try {
-            localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
-            localStorage.setItem(CURRENT_KEY, JSON.stringify(images));
-        } catch (e) {
-            console.warn('Storage save failed (might be full)', e);
-            showToast('Storage full! Purani history clear karein.', 'error');
-        }
-    }
-
-    // ===== GET TODAY KEY =====
+    // ===== DATE HELPERS =====
     function getTodayKey() {
         const d = new Date();
         return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
     }
 
-    // ===== GET TODAY LABEL =====
     function getTodayLabel() {
         const d = new Date();
         const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -762,28 +663,48 @@
         return `${days[d.getDay()]}, ${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
     }
 
-    // ===== ADD TO HISTORY =====
+    function getCurrentTime() {
+        return new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+    }
+
+    // ===== STORAGE =====
+    function loadFromStorage() {
+        try {
+            const h = localStorage.getItem(HISTORY_KEY);
+            if (h) history = JSON.parse(h);
+            const c = localStorage.getItem(CURRENT_KEY);
+            if (c) images = JSON.parse(c);
+        } catch (e) { console.warn(e); }
+    }
+
+    function saveToStorage() {
+        try {
+            localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+            localStorage.setItem(CURRENT_KEY, JSON.stringify(images));
+        } catch (e) {
+            console.warn('Storage full', e);
+            showToast('Storage full! History clear karein.', 'error');
+        }
+    }
+
+    // ===== ADD TO HISTORY (called on Copy) =====
     function addToHistory(img) {
         const todayKey = getTodayKey();
         const todayLabel = getTodayLabel();
-        const time = new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+        const time = getCurrentTime();
 
-        let dayEntry = history.find(h => h.dateKey === todayKey);
-
-        if (!dayEntry) {
-            dayEntry = {
-                dateKey: todayKey,
-                dateLabel: todayLabel,
-                items: []
-            };
-            history.unshift(dayEntry); // Newest first
+        let folder = history.find(h => h.dateKey === todayKey);
+        if (!folder) {
+            folder = { dateKey: todayKey, dateLabel: todayLabel, items: [], open: true };
+            history.unshift(folder);
         }
 
         // Remove duplicate (same link)
-        dayEntry.items = dayEntry.items.filter(item => item.link !== img.link);
+        folder.items = folder.items.filter(item => item.link !== img.link);
 
-        dayEntry.items.unshift({
-            id: img.id,
+        folder.items.unshift({
+            id: 'h_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
+            sourceId: img.id,
             name: img.name,
             size: img.size,
             link: img.link,
@@ -801,55 +722,141 @@
 
     // ===== RENDER HISTORY =====
     function renderHistory() {
+        const totalItems = history.reduce((sum, f) => sum + f.items.length, 0);
+        historyCount.innerText = totalItems;
+
         if (history.length === 0) {
             historyList.innerHTML = `
                 <div class="history-empty">
-                    <i class="fa-regular fa-clock"></i>
-                    <div>No history yet</div>
-                    <div style="font-size: 12px; margin-top: 6px;">Upload images to build history</div>
+                    <i class="fa-regular fa-folder-open"></i>
+                    <div>No folders yet</div>
+                    <div style="font-size: 12px; margin-top: 6px;">Copy button dabayein — folder ban jayega</div>
                 </div>
             `;
             return;
         }
 
-        historyList.innerHTML = history.map(day => `
-            <div class="history-day">
-                <div class="history-day-header">
-                    <h3><i class="fa-solid fa-calendar-day"></i> ${day.dateLabel}</h3>
-                    <span class="day-count">${day.items.length} image${day.items.length > 1 ? 's' : ''}</span>
+        historyList.innerHTML = history.map(folder => `
+            <div class="folder">
+                <div class="folder-header" onclick="toggleFolder('${folder.dateKey}')">
+                    <h3><i class="fa-solid fa-folder"></i> ${folder.dateLabel}</h3>
+                    <div class="folder-actions">
+                        <span class="folder-count">${folder.items.length} item${folder.items.length > 1 ? 's' : ''}</span>
+                    </div>
                 </div>
-                <div class="history-day-body">
-                    ${day.items.map(item => `
-                        <div class="history-item">
-                            <div class="history-item-preview">
-                                <img src="${item.previewUrl || item.thumb}" alt="${escapeHtml(item.name)}" onerror="this.src='${item.thumb}'">
-                            </div>
-                            <div class="history-item-info">
-                                <div class="history-item-name" title="${escapeHtml(item.name)}">${escapeHtml(item.name)}</div>
-                                <div class="history-item-time"><i class="fa-regular fa-clock"></i> ${item.time}</div>
-                            </div>
-                            <div class="history-item-actions">
-                                <button class="copy" onclick="copyHistoryLink('${item.id}')">
-                                    <i class="fa-solid fa-copy"></i> Copy
-                                </button>
-                                <button onclick="openHistoryLink('${item.id}')">
-                                    <i class="fa-solid fa-up-right-from-square"></i>
-                                </button>
-                                <button class="delete" onclick="deleteHistoryItem('${item.id}')">
-                                    <i class="fa-solid fa-trash"></i>
-                                </button>
-                            </div>
+                <div class="folder-body ${folder.open ? 'open' : ''}" id="folder-${folder.dateKey}">
+                    <div class="folder-toolbar">
+                        <label class="folder-toolbar-left">
+                            <input type="checkbox" onchange="toggleSelectAll('${folder.dateKey}', this.checked)" id="selectall-${folder.dateKey}">
+                            Select All
+                        </label>
+                        <div style="display:flex; gap:6px;">
+                            <button onclick="copySelected('${folder.dateKey}')">
+                                <i class="fa-solid fa-copy"></i> Copy Selected
+                            </button>
+                            <button onclick="copyAllInFolder('${folder.dateKey}')" style="background:#111827;">
+                                <i class="fa-solid fa-copy"></i> Copy All
+                            </button>
                         </div>
-                    `).join('')}
+                    </div>
+                    <div class="folder-grid" id="grid-${folder.dateKey}">
+                        ${folder.items.map(item => `
+                            <div class="history-item" data-id="${item.id}">
+                                <input type="checkbox" class="history-item-checkbox" 
+                                       onchange="toggleSelect('${folder.dateKey}', '${item.id}', this.checked)"
+                                       onclick="event.stopPropagation()">
+                                <div class="history-item-preview">
+                                    <img src="${item.previewUrl || item.thumb}" alt="${escapeHtml(item.name)}">
+                                </div>
+                                <div class="history-item-info">
+                                    <div class="history-item-name" title="${escapeHtml(item.name)}">${escapeHtml(item.name)}</div>
+                                    <div class="history-item-time"><i class="fa-regular fa-clock"></i> ${item.time}</div>
+                                </div>
+                                <div class="history-item-actions">
+                                    <button class="copy" onclick="event.stopPropagation(); copyHistoryItem('${item.id}')">
+                                        <i class="fa-solid fa-copy"></i> Copy
+                                    </button>
+                                    <button onclick="event.stopPropagation(); openHistoryItem('${item.id}')">
+                                        <i class="fa-solid fa-up-right-from-square"></i>
+                                    </button>
+                                    <button class="delete" onclick="event.stopPropagation(); deleteHistoryItem('${item.id}')">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
                 </div>
             </div>
         `).join('');
     }
 
-    // ===== COPY HISTORY LINK =====
-    function copyHistoryLink(itemId) {
-        for (const day of history) {
-            const item = day.items.find(i => i.id === itemId);
+    // ===== TOGGLE FOLDER =====
+    function toggleFolder(dateKey) {
+        const folder = history.find(h => h.dateKey === dateKey);
+        if (folder) {
+            folder.open = !folder.open;
+            saveToStorage();
+            const body = document.getElementById('folder-' + dateKey);
+            if (body) body.classList.toggle('open');
+        }
+    }
+
+    // ===== TOGGLE SELECT (single) =====
+    function toggleSelect(dateKey, itemId, checked) {
+        const folder = history.find(h => h.dateKey === dateKey);
+        if (!folder) return;
+        const item = folder.items.find(i => i.id === itemId);
+        if (item) item.selected = checked;
+
+        // Update card UI
+        const card = document.querySelector(`.history-item[data-id="${itemId}"]`);
+        if (card) card.classList.toggle('selected', checked);
+    }
+
+    // ===== TOGGLE SELECT ALL =====
+    function toggleSelectAll(dateKey, checked) {
+        const folder = history.find(h => h.dateKey === dateKey);
+        if (!folder) return;
+        folder.items.forEach(item => {
+            item.selected = checked;
+            const card = document.querySelector(`.history-item[data-id="${item.id}"]`);
+            if (card) card.classList.toggle('selected', checked);
+            const cb = card ? card.querySelector('.history-item-checkbox') : null;
+            if (cb) cb.checked = checked;
+        });
+    }
+
+    // ===== COPY SELECTED =====
+    function copySelected(dateKey) {
+        const folder = history.find(h => h.dateKey === dateKey);
+        if (!folder) return;
+        const selected = folder.items.filter(i => i.selected);
+        if (selected.length === 0) {
+            showToast('Koi item select nahi kiya', 'error');
+            return;
+        }
+        const text = selected.map(item => `📷 ${item.name}\n🔗 ${item.link}`).join('\n\n');
+        copyToClipboard(text);
+        showToast(`${selected.length} item(s) copied!`, 'success');
+    }
+
+    // ===== COPY ALL IN FOLDER =====
+    function copyAllInFolder(dateKey) {
+        const folder = history.find(h => h.dateKey === dateKey);
+        if (!folder || folder.items.length === 0) {
+            showToast('Folder khali hai', 'error');
+            return;
+        }
+        const text = folder.items.map(item => `📷 ${item.name}\n🔗 ${item.link}`).join('\n\n');
+        copyToClipboard(text);
+        showToast(`${folder.items.length} item(s) copied!`, 'success');
+    }
+
+    // ===== COPY SINGLE HISTORY ITEM =====
+    function copyHistoryItem(itemId) {
+        for (const folder of history) {
+            const item = folder.items.find(i => i.id === itemId);
             if (item) {
                 const text = `${item.name}\n${item.link}`;
                 copyToClipboard(text);
@@ -859,10 +866,10 @@
         }
     }
 
-    // ===== OPEN HISTORY LINK =====
-    function openHistoryLink(itemId) {
-        for (const day of history) {
-            const item = day.items.find(i => i.id === itemId);
+    // ===== OPEN HISTORY ITEM =====
+    function openHistoryItem(itemId) {
+        for (const folder of history) {
+            const item = folder.items.find(i => i.id === itemId);
             if (item) {
                 window.open(item.link, '_blank');
                 return;
@@ -872,14 +879,13 @@
 
     // ===== DELETE HISTORY ITEM =====
     function deleteHistoryItem(itemId) {
-        if (!confirm('Is image ko history se delete karein?')) return;
-        for (const day of history) {
-            day.items = day.items.filter(i => i.id !== itemId);
+        for (const folder of history) {
+            folder.items = folder.items.filter(i => i.id !== itemId);
         }
-        history = history.filter(day => day.items.length > 0);
+        history = history.filter(f => f.items.length > 0);
         saveToStorage();
         renderHistory();
-        showToast('History item deleted', 'success');
+        showToast('Item deleted', 'success');
     }
 
     // ===== CLEAR HISTORY =====
@@ -994,8 +1000,7 @@
                     img.thumb = data.data.thumb?.url || data.data.url;
                     renderGallery();
                     saveToStorage();
-                    addToHistory(img);
-                    showToast('Image uploaded! History mein save ho gayi.', 'success');
+                    showToast('Image uploaded! Copy dabayein — folder ban jayega.', 'success');
                 }
             } else {
                 throw new Error(data.error?.message || 'Upload failed');
@@ -1106,14 +1111,6 @@
         if (img) {
             img.name = value;
             saveToStorage();
-            // Also update in history
-            for (const day of history) {
-                const histItem = day.items.find(i => i.id === id);
-                if (histItem) {
-                    histItem.name = value;
-                }
-            }
-            saveToStorage();
         }
     }
 
@@ -1124,7 +1121,7 @@
         return div.innerHTML;
     }
 
-    // ===== COPY SINGLE LINK =====
+    // ===== COPY SINGLE LINK (also saves to history) =====
     function copyLink(id, btn) {
         const img = images.find(i => i.id === id);
         if (!img || !img.link) return;
@@ -1132,13 +1129,17 @@
         const text = `${img.name}\n${img.link}`;
         copyToClipboard(text);
 
+        // ⭐ ADD TO HISTORY
+        addToHistory(img);
+
         btn.classList.add('copied');
         btn.innerHTML = '<i class="fa-solid fa-check"></i> Copied!';
         setTimeout(() => {
             btn.classList.remove('copied');
             btn.innerHTML = '<i class="fa-solid fa-copy"></i> Copy';
         }, 2000);
-        showToast('Name + Link copied!', 'success');
+
+        showToast('Copied! History mein folder ban gaya.', 'success');
     }
 
     // ===== COPY ALL =====
@@ -1154,7 +1155,11 @@
         ).join('\n\n');
 
         copyToClipboard(text);
-        showToast(`${readyImages.length} image(s) copied with names!`, 'success');
+
+        // Add all to history
+        readyImages.forEach(img => addToHistory(img));
+
+        showToast(`${readyImages.length} image(s) copied! History mein save ho gaye.`, 'success');
     }
 
     // ===== COPY TO CLIPBOARD =====
@@ -1202,7 +1207,7 @@
         images = images.filter(i => i.id !== id);
         renderGallery();
         saveToStorage();
-        showToast('Image removed from upload (history mein safe hai)', 'success');
+        showToast('Image removed (history mein safe hai)', 'success');
     }
 
     // ===== CLEAR CURRENT =====
